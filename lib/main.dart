@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'page/home.dart';
+import 'page/category.dart';
+import 'page/cart.dart';
+import 'page/order.dart';
+import 'page/user.dart';
 
 void main() => runApp(new MyApp());
 
@@ -21,29 +26,34 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => new _MainPageState();
 }
 
-class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin {
+class _MainPageState extends State<MainPage> {
   int _navCurrentIndex = 0; //当前选中的页面下标
-  TabController tabController;
 
   @override
   void initState() {
     super.initState();
-    tabController = new TabController(length: 3, vsync: this);
+  }
+
+  Widget _buildPage(int pageIndex, Widget page) {
+    return new Offstage(
+      offstage: _navCurrentIndex != pageIndex,
+      child: new TickerMode(
+        enabled: _navCurrentIndex == pageIndex,
+        child: page,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    AppBar appBar = new AppBar(
-      title: new Text('首页'),
-      centerTitle: true,
-    );
-
     Widget body = new Center(
-      child: new Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: new Stack(
         children: <Widget>[
-          new Text('首页'),
+          _buildPage(0, new Home()),
+          _buildPage(1, new Category()),
+          _buildPage(2, new Cart()),
+          _buildPage(3, new Order()),
+          _buildPage(4, new User()),
         ],
       ),
     );
@@ -85,7 +95,6 @@ class _MainPageState extends State<MainPage>
       },
     );
     return new Scaffold(
-      appBar: appBar,
       body: body,
       bottomNavigationBar:
           botNavBar, // This trailing comma makes auto-formatting nicer for build methods.
